@@ -1,33 +1,46 @@
 <template>
   <div>
-    <h1>Weather App</h1>
-    <input type="text" v-model="city" placeholder="Enter a city">
-    <button @click="getWeather()">Get weather</button>
-
+    <h2>Weather Report</h2>
+    <input v-model="city" placeholder="Enter city name" />
+    <button @click="getWeather">Get Weather</button>
     <div v-if="weatherData">
-      <h2>{{ weatherData.city.name }}</h2>
-      <p>{{ weatherData.main.temp }} °C</p>
-      <p>{{ weatherData.weather[0].description }}</p>
+      <p>City: {{ weatherData.location.name }}</p>
+      <p v-if="weatherData.current">
+        Temperature: {{ weatherData.current.temp_c }}°C
+      </p>
+      <p v-if="weatherData.current.last_updated">
+        Last Updated: {{ weatherData.current.last_updated }}
+      </p>
     </div>
+    <p v-if="error" style="color: red;">Error fetching weather data: {{ error }}</p>
   </div>
 </template>
 
 <script>
-import { openweathermap } from 'openweathermap-api-client';
+import axios from 'axios';
 
 export default {
-  name: 'WeatherApp',
   data() {
     return {
       city: '',
       weatherData: null,
+      error: null,
     };
   },
   methods: {
     getWeather() {
-      openweathermap.currentWeather({ city: this.city }).then(response => {
-        this.weatherData = response.data;
-      });
+      const apiKey = '1b98533363a543ef8a021313232410'; // Replace with your WeatherAPI key
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
+      axios
+        .get(url)
+        .then(response => {
+          this.weatherData = response.data;
+          this.error = null; // Reset the error if the request is successful
+        })
+        .catch(error => {
+          this.error = error.message;
+          this.weatherData = null; // Reset the weatherData if there's an error
+        });
     },
   },
 };
