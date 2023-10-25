@@ -1,12 +1,25 @@
 <template>
   <div>
-    <h2>Weather Report</h2>
+    <h2>Weather Report 📈</h2>
     <input v-model="city" placeholder="Enter city name" />
     <button @click="getWeather">Get Weather</button>
     <div v-if="weatherData">
+      <br>
       <p>City: {{ weatherData.location.name }}</p>
       <p v-if="weatherData.current">
         Temperature: {{ weatherData.current.temp_c }}°C
+        <br>
+        Humidity: {{ weatherData.current.humidity }}%
+        <br>
+        Wind Speed (km/h): {{ weatherData.current.wind_kph }} km/h
+        <br>
+        Air Pressure (mb): {{ weatherData.current.pressure_mb }} mb
+        <br>
+        Precipitation (mm): {{ weatherData.current.precip_mm }} mm
+        <br>
+        <br>
+        Chance it will rain: {{ weatherData.current.chance_of_rain }}
+        <br>
       </p>
       <p v-if="weatherData.current.last_updated">
         Last Updated: {{ weatherData.current.last_updated }}
